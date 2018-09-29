@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flow-chart">
     <Tools></Tools>
     <AppMain></AppMain>
   </div>
@@ -18,5 +18,9 @@ export default {
 </script>
 
 <style scoped>
-
+.flow-chart {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 </style>
