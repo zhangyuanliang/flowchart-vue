@@ -22,6 +22,7 @@ export default {
 <style scoped>
 
 .tools {
+  min-width: 600px;
   height: 46px!important;
   background-color: #ACB9CB;
 }
@@ -31,6 +32,11 @@ export default {
   color: #606266;
   margin: 0 20px;
   font-size: 1.5em;
+  cursor: pointer;
+}
+
+.tools i:hover {
+  color: #9fe499;
 }
 
 </style>
