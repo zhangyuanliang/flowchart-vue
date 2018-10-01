@@ -24,12 +24,12 @@ export default {
 .tools {
   min-width: 600px;
   height: 46px!important;
-  background-color: #ACB9CB;
+  border-bottom: 1px solid #6e94e0;
 }
 
 .tools i {
   height: 24px;
-  color: #606266;
+  color: #6e94e0;
   margin: 0 20px;
   font-size: 1.5em;
   cursor: pointer;

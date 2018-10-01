@@ -42,7 +42,7 @@ export default {
 .left-tools {
   width: 160px;
   height: 100%;
-  border-right: 1px solid gray;
+  border-right: 1px solid #6e94e0;
 }
 
 ul {
