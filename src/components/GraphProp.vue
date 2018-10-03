@@ -44,6 +44,7 @@ ul li span {
 .prop-title {
   line-height: 40px;
   padding-left: 6px;
+  border-top: 1px solid #6e94e0;
   text-align: middle;
   background-color: #d7dfef;;
 }

@@ -4,7 +4,9 @@
       <li v-for="btn in btns"
           :key="btn.type"
           :draggable="btn.draggable"
-          @click="toggle(btn)"
+          @click="changeBtn(btn)"
+          @dragstart="dragstart($event, btn)"
+          @dragend="dragend"
           :class="{active: btn.active}"
       >
         <i :class="['tools', btn.type+'-icon']"></i>
@@ -32,11 +34,20 @@ export default {
     }
   },
   methods: {
-    toggle: function (btn) {
+    changeBtn: function (btn) {
       this.btns.map(function (item) {
         item.active = false
       })
       btn.active = !btn.active
+    },
+    dragstart: function (event, item) {
+      this.changeBtn(item)
+      this.$emit('changeState', true)
+      event.dataTransfer.setData('item', JSON.stringify(item))
+    },
+    dragend: function (event) {
+      this.$emit('changeState', false)
+      event.dataTransfer.clearData()
     }
   }
 }
