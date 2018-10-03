@@ -1,32 +1,14 @@
 <template>
   <div class="left-tools">
     <ul>
-      <li>
-        <i class="tools select-icon"></i><span>选择</span>
-      </li>
-      <li>
-        <i class="tools addStartEnd-icon"></i><span>自动插入</span>
-      </li>
-      <li draggable>
-        <i class="tools start-icon"></i><span>开始</span>
-      </li>
-      <li draggable>
-        <i class="tools end-icon"></i><span>结束</span>
-      </li>
-      <li draggable>
-        <i class="tools ordinary-icon"></i><span>普通活动</span>
-      </li>
-      <li draggable>
-        <i class="tools block-icon"></i><span>块活动</span>
-      </li>
-      <li draggable>
-        <i class="tools subFlow-icon"></i><span>子活动</span>
-      </li>
-      <li>
-        <i class="tools line-icon"></i><span>转移</span>
-      </li>
-      <li>
-        <i class="tools polyline-icon"></i><span>自转移</span>
+      <li v-for="btn in btns"
+          :key="btn.type"
+          :draggable="btn.draggable"
+          @click="toggle(btn)"
+          :class="{active: btn.active}"
+      >
+        <i :class="['tools', btn.type+'-icon']"></i>
+        <span>{{btn.name}}</span>
       </li>
     </ul>
   </div>
@@ -34,7 +16,29 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      btns: [
+        {name: '选择', type: 'select', draggable: false, active: true},
+        {name: '自动插入', type: 'addStartEnd', draggable: false, active: false},
+        {name: '开始', type: 'start', draggable: true, active: false},
+        {name: '结束', type: 'end', draggable: true, active: false},
+        {name: '普通活动', type: 'ordinary', draggable: true, active: false},
+        {name: '块活动', type: 'block', draggable: true, active: false},
+        {name: '子活动', type: 'subFlow', draggable: true, active: false},
+        {name: '转移', type: 'line', draggable: false, active: false},
+        {name: '自转移', type: 'polyline', draggable: false, active: false}
+      ]
+    }
+  },
+  methods: {
+    toggle: function (btn) {
+      this.btns.map(function (item) {
+        item.active = false
+      })
+      btn.active = !btn.active
+    }
+  }
 }
 </script>
 
@@ -54,13 +58,19 @@ ul li {
   list-style-type: none;
   height: 30px;
   line-height: 30px;
+  margin-bottom: 2px;
   padding: 0 8px;
   border-radius: 4px;
   position: relative;
+  border: 1px solid transparent;
 }
 
 ul li:hover {
   cursor: pointer;
+  border: 1px solid #ACB9CB;
+}
+
+ul li.active {
   color: white;
   background-color: #ACB9CB;
 }
