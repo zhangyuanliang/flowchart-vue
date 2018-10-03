@@ -9,6 +9,15 @@
 
 <script>
 export default {
+  data () {
+    return {
+      nodes: [
+        {id: 1, name: '普通活动', x: 100, y: 100},
+        {id: 2, name: '普通活动', x: 200, y: 200},
+        {id: 3, name: '普通活动', x: 300, y: 300}
+      ]
+    }
+  },
   props: {
     isDragging: {
       type: Boolean,
@@ -16,8 +25,15 @@ export default {
     }
   },
   methods: {
-    addNode: function () {
-      console.log('drop')
+    addNode: function (e) {
+      var jsonStr = e.dataTransfer.getData('item')
+      var jsonObj = JSON.parse(jsonStr)
+      this.nodes.push({
+        id: 4,
+        name: jsonObj.name,
+        x: e.x,
+        y: e.y
+      })
     }
   }
 }

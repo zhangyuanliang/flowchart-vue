@@ -35,7 +35,6 @@ export default {
   },
   methods: {
     changeState: function (state) {
-      console.log(state)
       this.isDragging = state
     }
   }
