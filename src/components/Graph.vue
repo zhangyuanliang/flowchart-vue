@@ -4,7 +4,7 @@
       @drop="addNode"
       @dragover.prevent
     >
-      <svg width="100%" height="418">
+      <svg width="100%" height="418" @mousemove="nodeMousemove($event)">
         <defs>
           <marker id="end-arrow" viewBox="0 -5 10 10" refX="42" markerWidth="5" markerHeight="5" orient="auto">
             <path d="M0,-5 L10,0 L0,5"></path>
@@ -31,7 +31,8 @@
                :key="node.id"
                :class="['conceptG', {selected: node.selected}]"
                :transform="'translate('+node.x+','+node.y+')'"
-               @click="clickNode(node)"
+               @mousedown="nodeMousedown(node)"
+               @mouseup="nodeMouseup"
             >
               <circle r="34"></circle>
               <text text-anchor="middle">
@@ -47,21 +48,25 @@
 
 <script>
 var nodeId = 3
+var testNodes = [
+  {id: 1, name: '普通活动', x: 200, y: 200, selected: false},
+  {id: 2, name: '普通活动', x: 300, y: 300, selected: false}
+]
+var testEdges = [
+  {id: 1, source: testNodes[0], target: testNodes[1], selected: false}
+]
 export default {
   data () {
     return {
-      nodes: [
-        {id: 1, name: '普通活动', x: 200, y: 200, selected: false},
-        {id: 2, name: '普通活动', x: 300, y: 300, selected: false}
-      ],
-      edges: [
-        {id: 1, source: {x: 200, y: 200}, target: {x: 300, y: 300}, selected: false}
-      ],
-      selectedEdge: false
+      nodes: testNodes,
+      edges: testEdges,
+      mousedownNode: null,
+      mousedownEdge: null,
+      selectedNode: null,
+      selectedEdge: null
     }
   },
-  computed: {
-  },
+  computed: {},
   props: {
     isDragging: {
       type: Boolean,
@@ -98,13 +103,27 @@ export default {
       this.unSelectedNodes()
       this.unSelectedEdges()
     },
-    clickNode: function (node) {
+    nodeMousedown: function (node) {
       this.unSelectedAll()
       node.selected = !node.selected
+      this.mousedownNode = node
+    },
+    nodeMousemove: function (e) {
+      var node = this.mousedownNode
+      if (node) {
+        node.x = node.x + e.movementX
+        node.y = node.y + e.movementY
+      }
+    },
+    nodeMouseup: function () {
+      this.mousedownNode = null
     },
     clickEdge: function (edge) {
       this.unSelectedAll()
       edge.selected = !edge.selected
+    },
+    dragstart: function (node) {
+      console.log(node)
     }
   }
 }
