@@ -3,7 +3,7 @@
 > 项目flowchart的vue版本
 
 #### 展示效果：
-![Image text](https://github.com/zhangyuanliang/flowchart-vue/blob/master/img/img.png)
+![Image text](https://github.com/zhangyuanliang/flowchart-vue/blob/master/printscreen/img.png)
 
 ## Build Setup
 
