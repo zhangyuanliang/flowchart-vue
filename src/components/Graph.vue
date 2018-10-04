@@ -18,25 +18,20 @@
         </defs>
         <g class="graph">
           <g>
-            <path class="link" d="M143,85L363,124" marker-end="url(#arrow)"></path>
+            <path v-for="edge in edges"
+                  :key="edge.id"
+                  :class="['link', {selected: edge.selected}]"
+                  :d="edgeData(edge)"
+                  marker-end="url(#arrow)"
+                  @click="clickEdge(edge)"
+            ></path>
           </g>
           <g>
-            <g class="conceptG" transform="translate(143,85)">
-              <circle r="33"></circle>
-              <text text-anchor="middle">
-                <tspan>普通活动</tspan>
-              </text>
-            </g>
-            <g class="conceptG" transform="translate(363,124)">
-              <circle r="34"></circle>
-              <text text-anchor="middle">
-                <tspan>普通活动</tspan>
-              </text>
-            </g>
             <g v-for="node in nodes"
                :key="node.id"
-               class="conceptG"
+               :class="['conceptG', {selected: node.selected}]"
                :transform="'translate('+node.x+','+node.y+')'"
+               @click="clickNode(node)"
             >
               <circle r="34"></circle>
               <text text-anchor="middle">
@@ -56,10 +51,16 @@ export default {
   data () {
     return {
       nodes: [
-        {id: 1, name: '普通活动', x: 200, y: 200},
-        {id: 2, name: '普通活动', x: 300, y: 300}
-      ]
+        {id: 1, name: '普通活动', x: 200, y: 200, selected: false},
+        {id: 2, name: '普通活动', x: 300, y: 300, selected: false}
+      ],
+      edges: [
+        {id: 1, source: {x: 200, y: 200}, target: {x: 300, y: 300}, selected: false}
+      ],
+      selectedEdge: false
     }
+  },
+  computed: {
   },
   props: {
     isDragging: {
@@ -68,6 +69,10 @@ export default {
     }
   },
   methods: {
+    edgeData: function (edge) {
+      return 'M' + edge.source.x + ',' + edge.source.y +
+             ' L' + edge.target.x + ',' + edge.target.y
+    },
     addNode: function (e) {
       var jsonStr = e.dataTransfer.getData('item')
       var jsonObj = JSON.parse(jsonStr)
@@ -75,8 +80,31 @@ export default {
         id: nodeId++,
         name: jsonObj.name,
         x: e.x - 165,
-        y: e.y - 53
+        y: e.y - 53,
+        selected: false
       })
+    },
+    unSelectedNodes: function () {
+      this.nodes.map(function (node) {
+        node.selected = false
+      })
+    },
+    unSelectedEdges: function () {
+      this.edges.map(function (edge) {
+        edge.selected = false
+      })
+    },
+    unSelectedAll: function () {
+      this.unSelectedNodes()
+      this.unSelectedEdges()
+    },
+    clickNode: function (node) {
+      this.unSelectedAll()
+      node.selected = !node.selected
+    },
+    clickEdge: function (edge) {
+      this.unSelectedAll()
+      edge.selected = !edge.selected
     }
   }
 }
@@ -112,6 +140,12 @@ g.conceptG circle {
   stroke-width: 1px;
 }
 
+g.conceptG.selected circle {
+  fill: #e8d0ef;
+  stroke: #9b78d3;
+  stroke-width: 1.5px;
+}
+
 g.conceptG:hover circle {
   fill: rgb(200, 238, 241);
 }
@@ -120,6 +154,10 @@ g.selected circle {
   fill: #e8d0ef;
   stroke: #9b78d3;
   stroke-width: 1.5px;
+}
+
+path.link.selected {
+  stroke: #9b78d3;
 }
 
 g.selected:hover circle {
@@ -139,6 +177,6 @@ path.link {
 }
 
 path.link:hover {
-  stroke: rgb(94, 196, 204) !important;
+  stroke: rgb(94, 196, 204);
 }
 </style>
