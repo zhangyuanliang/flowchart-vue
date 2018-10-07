@@ -8,6 +8,7 @@
       <div class="graph-container">
         <Graph
           :isDragging="isDragging"
+          :isLinking="isLinking"
         ></Graph>
         <GraphProp></GraphProp>
       </div>
@@ -24,7 +25,8 @@ import GraphProp from './GraphProp'
 export default {
   data () {
     return {
-      isDragging: false
+      isDragging: false,
+      isLinking: false
     }
   },
   components: {
@@ -35,7 +37,7 @@ export default {
   },
   methods: {
     changeState: function (state) {
-      this.isDragging = state
+      this[state.key] = state.value
     }
   }
 }

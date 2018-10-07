@@ -4,7 +4,7 @@
       @drop="addNode"
       @dragover.prevent
     >
-      <svg width="100%" height="418" @mousemove="nodeMousemove($event)">
+      <svg width="100%" height="418" @mousemove="svgMousemove($event)">
         <defs>
           <marker id="end-arrow" viewBox="0 -5 10 10" refX="42" markerWidth="5" markerHeight="5" orient="auto">
             <path d="M0,-5 L10,0 L0,5"></path>
@@ -12,7 +12,7 @@
           <marker id="mark-end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto">
             <path d="M0,-5 L10,0 L0,5"></path>
           </marker>
-          <marker id="arrow" markerWidth="12" markerHeight="12" viewBox="0 0 14 14" refX="30" refY="6" orient="auto">
+          <marker id="arrow" viewBox="0 0 14 14" refX="30" refY="6" markerWidth="12" markerHeight="12" orient="auto">
             <path d="M2,2 L10,6 L2,10 L6,6 L2,2"/>
           </marker>
         </defs>
@@ -29,12 +29,12 @@
           <g>
             <g v-for="node in nodes"
                :key="node.id"
-               :class="['conceptG', {selected: node.selected}]"
+               :class="['conceptG', {selected: node.selected, isLinking: isLinking}]"
                :transform="'translate('+node.x+','+node.y+')'"
                @mousedown="nodeMousedown(node)"
                @mouseup="nodeMouseup"
             >
-              <circle r="34"></circle>
+              <circle :r="node.r"></circle>
               <text text-anchor="middle">
                 <tspan>{{node.name}}</tspan>
               </text>
@@ -49,12 +49,14 @@
 <script>
 var nodeId = 3
 var testNodes = [
-  {id: 1, name: '普通活动', x: 200, y: 200, selected: false},
-  {id: 2, name: '普通活动', x: 300, y: 300, selected: false}
+  {id: 1, name: '普通活动', x: 200, y: 200, selected: false, r: 34},
+  {id: 2, name: '普通活动', x: 300, y: 300, selected: false, r: 34}
 ]
 var testEdges = [
   {id: 1, source: testNodes[0], target: testNodes[1], selected: false}
 ]
+const svgDx = 165
+const svgDy = 53
 export default {
   data () {
     return {
@@ -71,6 +73,10 @@ export default {
     isDragging: {
       type: Boolean,
       require: true
+    },
+    isLinking: {
+      type: Boolean,
+      require: true
     }
   },
   methods: {
@@ -84,9 +90,10 @@ export default {
       this.nodes.push({
         id: nodeId++,
         name: jsonObj.name,
-        x: e.x - 165,
-        y: e.y - 53,
-        selected: false
+        x: e.x - svgDx,
+        y: e.y - svgDy,
+        selected: false,
+        r: 34
       })
     },
     unSelectedNodes: function () {
@@ -108,11 +115,24 @@ export default {
       node.selected = !node.selected
       this.mousedownNode = node
     },
-    nodeMousemove: function (e) {
+    linkNodes: function () {
+
+    },
+    svgMousemove: function (e) {
       var node = this.mousedownNode
       if (node) {
-        node.x = node.x + e.movementX
-        node.y = node.y + e.movementY
+        var dx = Math.abs(e.x - node.x - svgDx)
+        var dy = Math.abs(e.y - node.y - svgDy)
+        if (dx > node.r) {
+          node.x = e.x - svgDx
+        } else {
+          node.x = node.x + e.movementX
+        }
+        if (dy > node.r) {
+          node.y = e.y - svgDy
+        } else {
+          node.y = node.y + e.movementY
+        }
       }
     },
     nodeMouseup: function () {
@@ -151,6 +171,10 @@ svg {
 
 marker {
   fill: #3c39f2;
+}
+
+g.conceptG.isLinking {
+  cursor: crosshair;
 }
 
 g.conceptG circle {

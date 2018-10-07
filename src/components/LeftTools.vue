@@ -39,14 +39,34 @@ export default {
         item.active = false
       })
       btn.active = !btn.active
+      var linktypes = ['line', 'polyline']
+      var state = {
+        key: 'isLinking',
+        value: false
+      }
+      if (linktypes.includes(btn.type)) {
+        state = {
+          key: 'isLinking',
+          value: true
+        }
+      }
+      this.$emit('changeState', state)
     },
     dragstart: function (event, item) {
       this.changeBtn(item)
-      this.$emit('changeState', true)
+      var state = {
+        key: 'isDragging',
+        value: true
+      }
+      this.$emit('changeState', state)
       event.dataTransfer.setData('item', JSON.stringify(item))
     },
     dragend: function (event) {
-      this.$emit('changeState', false)
+      var state = {
+        key: 'isDragging',
+        value: false
+      }
+      this.$emit('changeState', state)
       event.dataTransfer.clearData()
     }
   }
