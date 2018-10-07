@@ -18,19 +18,10 @@
 
 <script>
 export default {
-  data () {
-    return {
-      btns: [
-        {name: '选择', type: 'select', draggable: false, active: true},
-        {name: '自动插入', type: 'addStartEnd', draggable: false, active: false},
-        {name: '开始', type: 'start', draggable: true, active: false},
-        {name: '结束', type: 'end', draggable: true, active: false},
-        {name: '普通活动', type: 'ordinary', draggable: true, active: false},
-        {name: '块活动', type: 'block', draggable: true, active: false},
-        {name: '子活动', type: 'subFlow', draggable: true, active: false},
-        {name: '转移', type: 'line', draggable: false, active: false},
-        {name: '自转移', type: 'polyline', draggable: false, active: false}
-      ]
+  props: {
+    btns: {
+      type: Array,
+      require: true
     }
   },
   methods: {
@@ -41,12 +32,12 @@ export default {
       btn.active = !btn.active
       var linktypes = ['line', 'polyline']
       var state = {
-        key: 'isLinking',
+        key: 'toLink',
         value: false
       }
       if (linktypes.includes(btn.type)) {
         state = {
-          key: 'isLinking',
+          key: 'toLink',
           value: true
         }
       }

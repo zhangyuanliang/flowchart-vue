@@ -4,19 +4,22 @@
       @drop="addNode"
       @dragover.prevent
     >
-      <svg width="100%" height="418" @mousemove="svgMousemove($event)">
+      <svg width="100%" height="418"
+        @mousemove="svgMousemove($event)"
+        @contextmenu="rightMenu($event)"
+        @mousedown.right="svgMouseRightDown"
+        @mouseup="svgMouseUp"
+      >
         <defs>
-          <marker id="end-arrow" viewBox="0 -5 10 10" refX="42" markerWidth="5" markerHeight="5" orient="auto">
-            <path d="M0,-5 L10,0 L0,5"></path>
-          </marker>
-          <marker id="mark-end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto">
-            <path d="M0,-5 L10,0 L0,5"></path>
+          <marker id="mark-arrow" viewBox="0 0 14 14" refX="8" refY="6" markerWidth="12" markerHeight="12" orient="auto">
+            <path d="M2,2 L10,6 L2,10 L6,6 L2,2"/>
           </marker>
           <marker id="arrow" viewBox="0 0 14 14" refX="30" refY="6" markerWidth="12" markerHeight="12" orient="auto">
             <path d="M2,2 L10,6 L2,10 L6,6 L2,2"/>
           </marker>
         </defs>
         <g class="graph">
+          <path v-show="isLinking" class="link dragline" :d="dragData" marker-end="url(#mark-arrow)"></path>
           <g>
             <path v-for="edge in edges"
                   :key="edge.id"
@@ -29,10 +32,10 @@
           <g>
             <g v-for="node in nodes"
                :key="node.id"
-               :class="['conceptG', {selected: node.selected, isLinking: isLinking}]"
+               :class="['conceptG', {selected: node.selected, toLink: toLink}]"
                :transform="'translate('+node.x+','+node.y+')'"
                @mousedown="nodeMousedown(node)"
-               @mouseup="nodeMouseup"
+               @mouseup="nodeMouseup(node)"
             >
               <circle :r="node.r"></circle>
               <text text-anchor="middle">
@@ -48,6 +51,7 @@
 
 <script>
 var nodeId = 3
+var edgeId = 2
 var testNodes = [
   {id: 1, name: '普通活动', x: 200, y: 200, selected: false, r: 34},
   {id: 2, name: '普通活动', x: 300, y: 300, selected: false, r: 34}
@@ -65,7 +69,10 @@ export default {
       mousedownNode: null,
       mousedownEdge: null,
       selectedNode: null,
-      selectedEdge: null
+      selectedEdge: null,
+      justDrag: true,
+      isLinking: false,
+      dragData: ''
     }
   },
   computed: {},
@@ -74,7 +81,7 @@ export default {
       type: Boolean,
       require: true
     },
-    isLinking: {
+    toLink: {
       type: Boolean,
       require: true
     }
@@ -114,29 +121,60 @@ export default {
       this.unSelectedAll()
       node.selected = !node.selected
       this.mousedownNode = node
+      if (this.toLink) {
+        this.isLinking = true
+        this.justDrag = false
+      }
+    },
+    nodeMouseup: function (node) {
+      if (this.mousedownNode !== node) {
+        var edge = {
+          id: edgeId,
+          source: this.mousedownNode,
+          target: node,
+          selected: false
+        }
+        this.edges.push(edge)
+      }
     },
     linkNodes: function () {
 
     },
+    rightMenu: function (e) {
+      e.preventDefault()
+      return false
+    },
+    svgMouseRightDown: function () {
+      this.$emit('activeSelectBtn')
+    },
+    svgMouseUp: function () {
+      this.mousedownNode = null
+      this.dragData = ''
+      this.isLinking = false
+      this.justDrag = true
+    },
     svgMousemove: function (e) {
       var node = this.mousedownNode
       if (node) {
-        var dx = Math.abs(e.x - node.x - svgDx)
-        var dy = Math.abs(e.y - node.y - svgDy)
-        if (dx > node.r) {
-          node.x = e.x - svgDx
-        } else {
-          node.x = node.x + e.movementX
+        if (this.isLinking) { // link node
+          this.dragData = 'M' + node.x + ',' + node.y +
+                          'L' + (e.x - svgDx) + ',' + (e.y - svgDy)
         }
-        if (dy > node.r) {
-          node.y = e.y - svgDy
-        } else {
-          node.y = node.y + e.movementY
+        if (this.justDrag) { // drag node
+          var dx = Math.abs(e.x - node.x - svgDx)
+          var dy = Math.abs(e.y - node.y - svgDy)
+          if (dx > node.r) {
+            node.x = e.x - svgDx
+          } else {
+            node.x = node.x + e.movementX
+          }
+          if (dy > node.r) {
+            node.y = e.y - svgDy
+          } else {
+            node.y = node.y + e.movementY
+          }
         }
       }
-    },
-    nodeMouseup: function () {
-      this.mousedownNode = null
     },
     clickEdge: function (edge) {
       this.unSelectedAll()
@@ -173,7 +211,7 @@ marker {
   fill: #3c39f2;
 }
 
-g.conceptG.isLinking {
+g.conceptG.toLink {
   cursor: crosshair;
 }
 
@@ -221,5 +259,9 @@ path.link {
 
 path.link:hover {
   stroke: rgb(94, 196, 204);
+}
+
+tspan {
+  user-select: none
 }
 </style>

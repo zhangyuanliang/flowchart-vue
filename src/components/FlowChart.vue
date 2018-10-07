@@ -3,12 +3,14 @@
     <Tools></Tools>
     <div class="app-main">
       <LeftTools
+        :btns="btns"
         @changeState="changeState"
       ></LeftTools>
       <div class="graph-container">
         <Graph
           :isDragging="isDragging"
-          :isLinking="isLinking"
+          :toLink="toLink"
+          @activeSelectBtn="activeSelectBtn"
         ></Graph>
         <GraphProp></GraphProp>
       </div>
@@ -25,8 +27,19 @@ import GraphProp from './GraphProp'
 export default {
   data () {
     return {
+      btns: [
+        {name: '选择', type: 'select', draggable: false, active: true},
+        {name: '自动插入', type: 'addStartEnd', draggable: false, active: false},
+        {name: '开始', type: 'start', draggable: true, active: false},
+        {name: '结束', type: 'end', draggable: true, active: false},
+        {name: '普通活动', type: 'ordinary', draggable: true, active: false},
+        {name: '块活动', type: 'block', draggable: true, active: false},
+        {name: '子活动', type: 'subFlow', draggable: true, active: false},
+        {name: '转移', type: 'line', draggable: false, active: false},
+        {name: '自转移', type: 'polyline', draggable: false, active: false}
+      ],
       isDragging: false,
-      isLinking: false
+      toLink: false
     }
   },
   components: {
@@ -38,6 +51,16 @@ export default {
   methods: {
     changeState: function (state) {
       this[state.key] = state.value
+    },
+    activeSelectBtn: function () {
+      this.btns.forEach(function (btn) {
+        if (btn.type === 'select') {
+          btn.active = true
+        } else {
+          btn.active = false
+        }
+      })
+      this.toLink = false
     }
   }
 }
