@@ -1,14 +1,14 @@
 <template>
   <el-header class="tools flex-y-center">
     <div>
-      <i class="el-icon-delete"></i>
-      <i class="el-icon-circle-close-outline"></i>
-      <i class="el-icon-zoom-out"></i>
-      <i class="el-icon-zoom-in"></i>
-      <i class="el-icon-rank"></i>
-      <i class="el-icon-upload2"></i>
-      <i class="el-icon-download"></i>
-      <i class="el-icon-question"></i>
+      <i class="el-icon-delete" title="清空"></i>
+      <i class="el-icon-circle-close-outline" title="删除"></i>
+      <i class="el-icon-zoom-out" title="缩小"></i>
+      <i class="el-icon-zoom-in" title="放大"></i>
+      <i class="el-icon-rank" title="归位"></i>
+      <i class="el-icon-upload2" title="导出"></i>
+      <i class="el-icon-download" title="导入"></i>
+      <i class="el-icon-question" title="帮助"></i>
     </div>
   </el-header>
 </template>

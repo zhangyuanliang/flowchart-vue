@@ -1,50 +1,29 @@
 <template>
-  <div class="left-tools">
-    <ul>
-      <li v-for="btn in btns"
-          :key="btn.type"
-          :draggable="btn.draggable"
-          @click="changeBtn(btn)"
-          @dragstart="dragstart($event, btn)"
-          @dragend="dragend"
-          :class="{active: btn.active}"
-      >
-        <i :class="['tools', btn.type+'-icon']"></i>
-        <span>{{btn.name}}</span>
-      </li>
-    </ul>
-  </div>
+  <li :draggable="btn.draggable"
+      @click="clickBtn(btn)"
+      @dragstart="dragstart($event, btn)"
+      @dragend="dragend"
+      :class="{active: btn.active}"
+  >
+    <i :class="['tools', btn.type+'-icon']"></i>
+    <span>{{btn.name}}</span>
+  </li>
 </template>
 
 <script>
 export default {
   props: {
-    btns: {
-      type: Array,
+    btn: {
+      type: Object,
       require: true
     }
   },
   methods: {
-    changeBtn: function (btn) {
-      this.btns.map(function (item) {
-        item.active = false
-      })
-      btn.active = !btn.active
-      var linktypes = ['line', 'polyline']
-      var state = {
-        key: 'toLink',
-        value: false
-      }
-      if (linktypes.includes(btn.type)) {
-        state = {
-          key: 'toLink',
-          value: true
-        }
-      }
-      this.$emit('changeState', state)
+    clickBtn: function (type) {
+      this.$emit('selectedBtn', type)
     },
     dragstart: function (event, item) {
-      this.changeBtn(item)
+      this.clickBtn(item)
       var state = {
         key: 'isDragging',
         value: true
@@ -65,18 +44,7 @@ export default {
 </script>
 
 <style scoped>
-.left-tools {
-  width: 160px;
-  height: 100%;
-  border-right: 1px solid #6e94e0;
-}
-
-ul {
-  padding: 0 10px;
-  color: #757474;
-}
-
-ul li {
+li {
   list-style-type: none;
   height: 30px;
   line-height: 30px;
@@ -87,17 +55,20 @@ ul li {
   border: 1px solid transparent;
 }
 
-ul li:hover {
+li:hover {
   cursor: pointer;
   border: 1px solid #ACB9CB;
 }
 
-ul li.active {
+li.active {
   color: white;
   background-color: #ACB9CB;
+  transition-property: background-color, color;
+  transition-duration: .3s;
+  transition-timing-function: ease-out;
 }
 
-.left-tools i.tools {
+i.tools {
   position: absolute;
   top: 8px;
   display: inline-block;
@@ -106,61 +77,61 @@ ul li.active {
   overflow: hidden;
 }
 
-.left-tools span {
+span {
   margin-left: 20px;
 }
 
-.left-tools .select-icon {
+.select-icon {
   background: url('../assets/wf_tools.png');
   background-position: 0px 0px;
 }
 
-.left-tools .addStartEnd-icon {
+.addStartEnd-icon {
   background: url('../assets/wf_tools.png');
   background-position: 42px 0px;
 }
 
-.left-tools .start-icon {
+.start-icon {
   background: url('../assets/wf_tools.png');
   background-position: 81px 0px;
 }
 
-.left-tools .end-icon {
+.end-icon {
   background: url('../assets/wf_tools.png');
   background-position: 61px 0px;
 }
 
-.left-tools .ordinary-icon {
+.ordinary-icon {
   background: url('../assets/wf_tools.png');
   background-position: 0px 57px;
 }
 
-.left-tools .block-icon {
+.block-icon {
   background: url('../assets/wf_tools.png');
   background-position: 80px 57px;
 }
 
-.left-tools .subFlow-icon {
+.subFlow-icon {
   background: url('../assets/wf_tools.png');
   background-position: 61px 57px;
 }
 
-.left-tools .route-icon {
+.route-icon {
   background: url('../assets/wf_tools.png');
   background-position: 41px 57px;
 }
 
-.left-tools .line-icon {
+.line-icon {
   background: url('../assets/wf_tools.png');
   background-position: 0 34px;
 }
 
-.left-tools .polyline-icon {
+.polyline-icon {
   background: url('../assets/wf_tools.png');
   background-position: 81px 34px;
 }
 
-.left-tools .loop-icon {
+.loop-icon {
   background: url('../assets/wf_tools.png');
   background-position: 60px 34px;
 }

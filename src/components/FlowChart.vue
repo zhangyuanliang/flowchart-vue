@@ -2,10 +2,18 @@
   <div class="flow-chart">
     <Tools></Tools>
     <div class="app-main">
-      <LeftTools
-        :btns="btns"
-        @changeState="changeState"
-      ></LeftTools>
+      <div class="left-tools">
+        <ul>
+          <li
+            is="LeftToolBtn"
+            v-for="btn in btns"
+            :key="btn.type"
+            :btn="btn"
+            @selectedBtn="selectedBtn"
+            @changeState="changeState"
+          ></li>
+        </ul>
+      </div>
       <div class="graph-container">
         <Graph
           :isDragging="isDragging"
@@ -20,7 +28,7 @@
 
 <script>
 import Tools from './Tools'
-import LeftTools from './LeftTools'
+import LeftToolBtn from './LeftToolBtn'
 import Graph from './Graph'
 import GraphProp from './GraphProp'
 
@@ -44,16 +52,31 @@ export default {
   },
   components: {
     Tools,
-    LeftTools,
+    LeftToolBtn,
     Graph,
     GraphProp
   },
   methods: {
+    selectedBtn: function (btn) {
+      this.btns.map(item => {
+        item.active = false
+      })
+      btn.active = !btn.active
+      var linktypes = ['line', 'polyline']
+      var state = {
+        key: 'toLink',
+        value: false
+      }
+      if (linktypes.includes(btn.type)) {
+        state.value = true
+      }
+      this.changeState(state)
+    },
     changeState: function (state) {
       this[state.key] = state.value
     },
     activeSelectBtn: function () {
-      this.btns.forEach(function (btn) {
+      this.btns.forEach(btn => {
         if (btn.type === 'select') {
           btn.active = true
         } else {
@@ -83,5 +106,16 @@ export default {
 
 .graph-container {
   flex-grow: 1;
+}
+
+.left-tools {
+  width: 160px;
+  height: 100%;
+  border-right: 1px solid #6e94e0;
+}
+
+.left-tools ul {
+  padding: 0 10px;
+  color: #757474;
 }
 </style>
