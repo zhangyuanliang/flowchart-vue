@@ -5,7 +5,7 @@
       @dragend="dragend"
       :class="{active: btn.active}"
   >
-    <i :class="['tools', btn.type+'-icon']"></i>
+    <i :class="['tools', btn.value+'-icon']"></i>
     <span>{{btn.name}}</span>
   </li>
 </template>

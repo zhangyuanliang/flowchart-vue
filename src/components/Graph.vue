@@ -52,20 +52,11 @@
 <script>
 var nodeId = 3
 var edgeId = 2
-var testNodes = [
-  {id: 1, name: '普通活动', x: 200, y: 200, selected: false, r: 34},
-  {id: 2, name: '普通活动', x: 300, y: 300, selected: false, r: 34}
-]
-var testEdges = [
-  {id: 1, source: testNodes[0], target: testNodes[1], selected: false}
-]
 const svgDx = 165
 const svgDy = 53
 export default {
   data () {
     return {
-      nodes: testNodes,
-      edges: testEdges,
       mousedownNode: null,
       mousedownEdge: null,
       selectedNode: null,
@@ -77,6 +68,14 @@ export default {
   },
   computed: {},
   props: {
+    nodes: {
+      type: Array,
+      require: true
+    },
+    edges: {
+      type: Array,
+      require: true
+    },
     isDragging: {
       type: Boolean,
       require: true
@@ -97,6 +96,7 @@ export default {
       this.nodes.push({
         id: nodeId++,
         name: jsonObj.name,
+        type: jsonObj.type,
         x: e.x - svgDx,
         y: e.y - svgDy,
         selected: false,
@@ -129,7 +129,7 @@ export default {
     nodeMouseup: function (node) {
       if (this.mousedownNode !== node) {
         var edge = {
-          id: edgeId,
+          id: edgeId++,
           source: this.mousedownNode,
           target: node,
           selected: false
