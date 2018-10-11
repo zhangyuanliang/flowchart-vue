@@ -144,7 +144,7 @@ export default {
     nodesNoOutput: function () {
       var activties = this.filterAcivities()
       return activties.filter(node => {
-        return this.edges.some(edge => {
+        return this.edges.every(edge => {
           return edge.source !== node
         })
       })
