@@ -18,11 +18,10 @@
         <Graph
           :nodes="nodes"
           :edges="edges"
-          :isDragging="isDragging"
-          :toLink="toLink"
+          :state="state"
           @activeSelectBtn="activeSelectBtn"
         ></Graph>
-        <GraphProp></GraphProp>
+        <GraphProp :state="state"></GraphProp>
       </div>
     </div>
   </div>
@@ -60,8 +59,12 @@ export default {
       ],
       nodes: testNodes,
       edges: testEdges,
-      isDragging: false,
-      toLink: false
+      state: {
+        selectedNode: null,
+        selectedEdge: null,
+        isDragging: false,
+        toLink: false
+      }
     }
   },
   components: {
@@ -150,7 +153,7 @@ export default {
       })
     },
     changeState: function (state) {
-      this[state.key] = state.value
+      this.state[state.key] = state.value
     },
     activeSelectBtn: function () {
       this.btns.forEach(btn => {
@@ -160,7 +163,7 @@ export default {
           btn.active = false
         }
       })
-      this.toLink = false
+      this.state.toLink = false
     }
   }
 }

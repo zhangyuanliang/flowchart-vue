@@ -3,10 +3,10 @@
     <div class="prop-title">节点属性：</div>
     <ul>
       <Li>
-        <span>ID:</span><span>test1</span>
+        <span>ID:</span><span>{{showProp.id}}</span>
       </Li>
       <Li>
-        <span>名称:</span><span>test2</span>
+        <span>描述:</span><span>{{showProp.description}}</span>
       </Li>
     </ul>
   </div>
@@ -14,7 +14,45 @@
 
 <script>
 export default {
-
+  props: {
+    state: {
+      type: Object,
+      require: true
+    }
+  },
+  data () {
+    return {
+      showProp: {
+        id: '',
+        description: ''
+      }
+    }
+  },
+  methods: {
+    showSelectedProp: function (type, data) {
+      var prop = {}
+      if (type === 'node') {
+        prop.description = data.name
+      } else {
+        prop.description = '由 ' + data.source.name + ' 指向 ' + data.target.name
+      }
+      this.showProp = Object.assign(prop, data)
+    }
+  },
+  watch: {
+    'state.selectedNode': function (curr, old) {
+      if (!curr) {
+        return false
+      }
+      this.showSelectedProp('node', curr)
+    },
+    'state.selectedEdge': function (curr, old) {
+      if (!curr) {
+        return false
+      }
+      this.showSelectedProp('edge', curr)
+    }
+  }
 }
 </script>
 
@@ -37,7 +75,7 @@ ul li {
 
 ul li span {
   display: inline-block;
-  width: 25%;
+  width: 40%;
   color: gray;
 }
 

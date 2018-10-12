@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div :class="['graph', {active: isDragging}]"
+    <div :class="['graph', {active: state.isDragging}]"
       @drop="addNode"
       @dragover.prevent
     >
@@ -32,7 +32,7 @@
           <g>
             <g v-for="node in nodes"
                :key="node.id"
-               :class="['conceptG', {selected: node.selected, toLink: toLink}]"
+               :class="['conceptG', {selected: node.selected, toLink: state.toLink}]"
                :transform="'translate('+node.x+','+node.y+')'"
                @mousedown="nodeMousedown(node)"
                @mouseup="nodeMouseup(node)"
@@ -59,8 +59,6 @@ export default {
     return {
       mousedownNode: null,
       mousedownEdge: null,
-      selectedNode: null,
-      selectedEdge: null,
       justDrag: true,
       isLinking: false,
       dragData: ''
@@ -76,12 +74,8 @@ export default {
       type: Array,
       require: true
     },
-    isDragging: {
-      type: Boolean,
-      require: true
-    },
-    toLink: {
-      type: Boolean,
+    state: {
+      type: Object,
       require: true
     }
   },
@@ -107,21 +101,25 @@ export default {
       this.nodes.map(function (node) {
         node.selected = false
       })
+      this.state.selectedNode = null
     },
     unSelectedEdges: function () {
       this.edges.map(function (edge) {
         edge.selected = false
       })
+      this.state.selectedEdge = null
     },
     unSelectedAll: function () {
       this.unSelectedNodes()
       this.unSelectedEdges()
     },
     nodeMousedown: function (node) {
+      var state = this.state
       this.unSelectedAll()
-      node.selected = !node.selected
+      node.selected = true
+      state.selectedNode = node
       this.mousedownNode = node
-      if (this.toLink) {
+      if (state.toLink) {
         this.isLinking = true
         this.justDrag = false
       }
@@ -178,10 +176,8 @@ export default {
     },
     clickEdge: function (edge) {
       this.unSelectedAll()
-      edge.selected = !edge.selected
-    },
-    dragstart: function (node) {
-      console.log(node)
+      edge.selected = true
+      this.state.selectedEdge = edge
     }
   }
 }
