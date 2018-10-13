@@ -46,10 +46,13 @@
         </g>
       </svg>
     </div>
+    <RightMenu></RightMenu>
   </div>
 </template>
 
 <script>
+import RightMenu from './RightMenu'
+
 var nodeId = 3
 var edgeId = 2
 const svgDx = 165
@@ -78,6 +81,9 @@ export default {
       type: Object,
       require: true
     }
+  },
+  components: {
+    RightMenu
   },
   methods: {
     edgeData: function (edge) {

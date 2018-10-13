@@ -2,7 +2,9 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 
+// 导入样式
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import 'font-awesome/scss/font-awesome.scss'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'

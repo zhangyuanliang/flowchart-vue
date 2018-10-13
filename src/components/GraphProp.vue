@@ -78,6 +78,9 @@ ul li span {
   width: 40%;
   color: gray;
 }
+ul li span:first-of-type {
+  width: 20%;
+}
 
 .prop-title {
   line-height: 40px;
