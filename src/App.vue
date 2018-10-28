@@ -1,20 +1,11 @@
 <template>
   <div id="app">
-    <FlowChart></FlowChart>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import FlowChart from './components/FlowChart'
-
-export default {
-  name: 'App',
-  components: {
-    FlowChart
-  }
+export default{
+  name: 'App'
 }
 </script>
-
-<style>
-
-</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div :class="['graph', {active: state.isDragging}]"
+    <div :class="['graph', {active: graphState.isDragging}]"
       @drop="addNode"
       @dragover.prevent
     >
@@ -32,7 +32,7 @@
           <g>
             <g v-for="node in nodes"
                :key="node.id"
-               :class="['conceptG', {selected: node.selected, toLink: state.toLink}]"
+               :class="['conceptG', {selected: node.selected, toLink: graphState.toLink}]"
                :transform="'translate('+node.x+','+node.y+')'"
                @mousedown="nodeMousedown(node)"
                @mouseup="nodeMouseup(node)"
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import {mapGetters, mapActions} from 'vuex'
 import RightMenu from './RightMenu'
 
 var nodeId = 3
@@ -67,7 +68,11 @@ export default {
       dragData: ''
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters([
+      'graphState'
+    ])
+  },
   props: {
     nodes: {
       type: Array,
@@ -76,16 +81,17 @@ export default {
     edges: {
       type: Array,
       require: true
-    },
-    state: {
-      type: Object,
-      require: true
     }
   },
   components: {
     RightMenu
   },
   methods: {
+    ...mapActions([
+      'toggle_toLink',
+      'changSelectedNode',
+      'changSelectedEdge'
+    ]),
     edgeData: function (edge) {
       return 'M' + edge.source.x + ',' + edge.source.y +
              ' L' + edge.target.x + ',' + edge.target.y
@@ -107,25 +113,23 @@ export default {
       this.nodes.map(function (node) {
         node.selected = false
       })
-      this.state.selectedNode = null
     },
     unSelectedEdges: function () {
       this.edges.map(function (edge) {
         edge.selected = false
       })
-      this.state.selectedEdge = null
     },
     unSelectedAll: function () {
       this.unSelectedNodes()
       this.unSelectedEdges()
     },
     nodeMousedown: function (node) {
-      var state = this.state
       this.unSelectedAll()
       node.selected = true
-      state.selectedNode = node
+      // this.changSelectedNode(node)
+      this.$store.dispatch('changSelectedNode', node)
       this.mousedownNode = node
-      if (state.toLink) {
+      if (this.graphState.toLink) {
         this.isLinking = true
         this.justDrag = false
       }
@@ -183,7 +187,8 @@ export default {
     clickEdge: function (edge) {
       this.unSelectedAll()
       edge.selected = true
-      this.state.selectedEdge = edge
+      // this.changSelectedEdge(edge)
+      this.$store.dispatch('changSelectedEdge', edge)
     }
   }
 }

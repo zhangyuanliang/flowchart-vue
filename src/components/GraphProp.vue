@@ -13,13 +13,8 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
-  props: {
-    state: {
-      type: Object,
-      require: true
-    }
-  },
   data () {
     return {
       showProp: {
@@ -27,6 +22,11 @@ export default {
         description: ''
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'graphState'
+    ])
   },
   methods: {
     showSelectedProp: function (type, data) {
@@ -40,13 +40,13 @@ export default {
     }
   },
   watch: {
-    'state.selectedNode': function (curr, old) {
+    'graphState.selectedNode': function (curr, old) {
       if (!curr) {
         return false
       }
       this.showSelectedProp('node', curr)
     },
-    'state.selectedEdge': function (curr, old) {
+    'graphState.selectedEdge': function (curr, old) {
       if (!curr) {
         return false
       }

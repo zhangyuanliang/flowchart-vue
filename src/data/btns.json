@@ -1,0 +1,11 @@
+[
+  {"name": "选择", "value": "select", "type": null, "draggable": false, "active": true},
+  {"name": "自动插入", "value": "addStartEnd", "type": null, "draggable": false, "active": false},
+  {"name": "开始", "value": "start", "type": "start", "draggable": true, "active": false},
+  {"name": "结束", "value": "end", "type": "end", "draggable": true, "active": false},
+  {"name": "普通活动", "value": "ordinary", "type": "activity", "draggable": true, "active": false},
+  {"name": "块活动", "value": "block", "type": "activity", "draggable": true, "active": false},
+  {"name": "子活动", "value": "subFlow", "type": "activity", "draggable": true, "active": false},
+  {"name": "转移", "value": "line", "type": null, "draggable": false, "active": false},
+  {"name": "自转移", "value": "polyline", "type": null, "draggable": false, "active": false}
+]

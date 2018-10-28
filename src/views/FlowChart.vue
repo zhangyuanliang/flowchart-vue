@@ -10,7 +10,6 @@
             :key="btn.value"
             :btn="btn"
             @selectedBtn="selectedBtn"
-            @changeState="changeState"
           ></li>
         </ul>
       </div>
@@ -18,22 +17,25 @@
         <Graph
           :nodes="nodes"
           :edges="edges"
-          :state="state"
           @activeSelectBtn="activeSelectBtn"
         ></Graph>
-        <GraphProp :state="state"></GraphProp>
+        <GraphProp></GraphProp>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Tools from './Tools'
-import LeftToolBtn from './LeftToolBtn'
-import Graph from './Graph'
-import GraphProp from './GraphProp'
+import {mapGetters, mapActions} from 'vuex'
+
+import Tools from '@/components/Tools'
+import LeftToolBtn from '@/components/LeftToolBtn'
+import Graph from '@/components/Graph'
+import GraphProp from '@/components/GraphProp'
 
 import UUID from '@/utils/createUniqueString'
+
+import btnsData from '@/data/btns.json'
 
 var testNodes = [
   {id: 1, name: '普通活动', type: 'activity', x: 200, y: 200, selected: false, r: 34},
@@ -46,25 +48,9 @@ var testEdges = [
 export default {
   data () {
     return {
-      btns: [
-        {name: '选择', value: 'select', type: null, draggable: false, active: true},
-        {name: '自动插入', value: 'addStartEnd', type: null, draggable: false, active: false},
-        {name: '开始', value: 'start', type: 'start', draggable: true, active: false},
-        {name: '结束', value: 'end', type: 'end', draggable: true, active: false},
-        {name: '普通活动', value: 'ordinary', type: 'activity', draggable: true, active: false},
-        {name: '块活动', value: 'block', type: 'activity', draggable: true, active: false},
-        {name: '子活动', value: 'subFlow', type: 'activity', draggable: true, active: false},
-        {name: '转移', value: 'line', type: null, draggable: false, active: false},
-        {name: '自转移', value: 'polyline', type: null, draggable: false, active: false}
-      ],
+      btns: btnsData,
       nodes: testNodes,
-      edges: testEdges,
-      state: {
-        selectedNode: null,
-        selectedEdge: null,
-        isDragging: false,
-        toLink: false
-      }
+      edges: testEdges
     }
   },
   components: {
@@ -73,20 +59,25 @@ export default {
     Graph,
     GraphProp
   },
+  computed: {
+    ...mapGetters([
+      'graphState'
+    ])
+  },
   methods: {
+    ...mapActions([
+      'toggle_toLink'
+    ]),
     selectedBtn: function (btn) {
       this.btns.map(item => {
         item.active = false
       })
       btn.active = !btn.active
-      var state = {
-        key: 'toLink',
-        value: false
-      }
+      var toLink = false
       switch (btn.value) {
         case 'line':
         case 'polyline':
-          state.value = true
+          toLink = true
           break
         case 'addStartEnd':
           this.addStartAndEnd()
@@ -94,7 +85,8 @@ export default {
         default:
           break
       }
-      this.changeState(state)
+      // this.graphState.toLink = toLink
+      this.$store.dispatch('toggle_toLink', toLink)
     },
     addStartAndEnd: function () {
       this.nodesNoOutput().forEach(node => {
@@ -152,9 +144,6 @@ export default {
         })
       })
     },
-    changeState: function (state) {
-      this.state[state.key] = state.value
-    },
     activeSelectBtn: function () {
       this.btns.forEach(btn => {
         if (btn.value === 'select') {
@@ -163,7 +152,8 @@ export default {
           btn.active = false
         }
       })
-      this.state.toLink = false
+      // this.state.toLink = false
+      this.$store.dispatch('toggle_toLink', false)
     }
   }
 }
