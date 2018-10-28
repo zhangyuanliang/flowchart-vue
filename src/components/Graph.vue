@@ -88,7 +88,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'toggle_toLink',
       'changSelectedNode',
       'changSelectedEdge'
     ]),
@@ -126,8 +125,8 @@ export default {
     nodeMousedown: function (node) {
       this.unSelectedAll()
       node.selected = true
-      // this.changSelectedNode(node)
-      this.$store.dispatch('changSelectedNode', node)
+      this.changSelectedNode(node)
+      // this.$store.dispatch('changSelectedNode', node)
       this.mousedownNode = node
       if (this.graphState.toLink) {
         this.isLinking = true
@@ -187,8 +186,8 @@ export default {
     clickEdge: function (edge) {
       this.unSelectedAll()
       edge.selected = true
-      // this.changSelectedEdge(edge)
-      this.$store.dispatch('changSelectedEdge', edge)
+      this.changSelectedEdge(edge)
+      // this.$store.dispatch('changSelectedEdge', edge)
     }
   }
 }

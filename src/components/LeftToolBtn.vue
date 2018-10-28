@@ -32,8 +32,8 @@ export default {
       event.dataTransfer.setData('item', JSON.stringify(item))
     },
     dragend: function (event) {
-      // this.toggle_isDragging(false)
-      this.$store.dispatch('toggle_isDragging', false)
+      this.toggle_isDragging(false)
+      // this.$store.dispatch('toggle_isDragging', false)
       event.dataTransfer.clearData()
     }
   }
