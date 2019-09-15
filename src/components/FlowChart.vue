@@ -16,8 +16,6 @@
       </div>
       <div class="graph-container">
         <Graph
-          :nodes="nodes"
-          :edges="edges"
           :state="state"
           @activeSelectBtn="activeSelectBtn"
         ></Graph>
@@ -28,6 +26,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import Tools from './Tools'
 import LeftToolBtn from './LeftToolBtn'
 import Graph from './Graph'
@@ -35,37 +35,21 @@ import GraphProp from './GraphProp'
 
 import UUID from '@/utils/createUniqueString'
 
-var testNodes = [
-  {id: 1, name: '普通活动', type: 'activity', x: 200, y: 200, selected: false, r: 34},
-  {id: 2, name: '普通活动', type: 'activity', x: 300, y: 300, selected: false, r: 34}
-]
-var testEdges = [
-  {id: 1, source: testNodes[0], target: testNodes[1], selected: false}
-]
-
 export default {
   data () {
     return {
-      btns: [
-        {name: '选择', value: 'select', type: null, draggable: false, active: true},
-        {name: '自动插入', value: 'addStartEnd', type: null, draggable: false, active: false},
-        {name: '开始', value: 'start', type: 'start', draggable: true, active: false},
-        {name: '结束', value: 'end', type: 'end', draggable: true, active: false},
-        {name: '普通活动', value: 'ordinary', type: 'activity', draggable: true, active: false},
-        {name: '块活动', value: 'block', type: 'activity', draggable: true, active: false},
-        {name: '子活动', value: 'subFlow', type: 'activity', draggable: true, active: false},
-        {name: '转移', value: 'line', type: null, draggable: false, active: false},
-        {name: '自转移', value: 'polyline', type: null, draggable: false, active: false}
-      ],
-      nodes: testNodes,
-      edges: testEdges,
       state: {
-        selectedNode: null,
-        selectedEdge: null,
         isDragging: false,
         toLink: false
       }
     }
+  },
+  computed: {
+    ...mapState({
+      nodes: state => state.flowchart.nodes,
+      edges: state => state.flowchart.edges,
+      btns: state => state.flowchart.btns
+    })
   },
   components: {
     Tools,
@@ -98,7 +82,7 @@ export default {
     },
     addStartAndEnd: function () {
       this.nodesNoOutput().forEach(node => {
-        var endNode = {
+        const endNode = {
           id: UUID(),
           name: '结束',
           type: 'end',
@@ -107,15 +91,16 @@ export default {
           selected: false,
           r: 34
         }
-        this.nodes.push(endNode)
-        this.edges.push({
+        this.$store.commit('ADD_NODE', endNode)
+        this.$store.commit('ADD_EDGE', {
           id: UUID(),
           source: node,
           target: endNode,
-          selected: false})
+          selected: false
+        })
       })
       this.nodesNoInput().forEach(node => {
-        var startNode = {
+        const startNode = {
           id: UUID(),
           name: '开始',
           type: 'start',
@@ -124,8 +109,8 @@ export default {
           selected: false,
           r: 34
         }
-        this.nodes.push(startNode)
-        this.edges.push({
+        this.$store.commit('ADD_NODE', startNode)
+        this.$store.commit('ADD_EDGE', {
           id: UUID(),
           source: startNode,
           target: node,

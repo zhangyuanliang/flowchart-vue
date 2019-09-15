@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   props: {
     state: {
@@ -28,6 +30,12 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      selectedNode: state => state.flowchart.selectedNode,
+      selectedEdge: state => state.flowchart.selectedEdge
+    })
+  },
   methods: {
     showSelectedProp: function (type, data) {
       var prop = {}
@@ -40,13 +48,13 @@ export default {
     }
   },
   watch: {
-    'state.selectedNode': function (curr, old) {
+    'selectedNode': function (curr, old) {
       if (!curr) {
         return false
       }
       this.showSelectedProp('node', curr)
     },
-    'state.selectedEdge': function (curr, old) {
+    'selectedEdge': function (curr, old) {
       if (!curr) {
         return false
       }

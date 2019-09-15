@@ -1,14 +1,17 @@
 <template>
   <div class="container">
-    <div :class="['graph', {active: state.isDragging}]"
+    <div
       @drop="addNode"
       @dragover.prevent
+      :class="['graph', {active: state.isDragging}]"
     >
-      <svg width="100%" height="418"
+      <svg
         @mousemove="svgMousemove($event)"
         @contextmenu="rightMenu($event)"
         @mousedown.right="svgMouseRightDown"
         @mouseup="svgMouseUp"
+        width="100%"
+        height="418"
       >
         <defs>
           <marker id="mark-arrow" viewBox="0 0 14 14" refX="8" refY="6" markerWidth="12" markerHeight="12" orient="auto">
@@ -21,21 +24,23 @@
         <g class="graph">
           <path v-show="isLinking" class="link dragline" :d="dragData" marker-end="url(#mark-arrow)"></path>
           <g>
-            <path v-for="edge in edges"
-                  :key="edge.id"
-                  :class="['link', {selected: edge.selected}]"
-                  :d="edgeData(edge)"
-                  marker-end="url(#arrow)"
-                  @click="clickEdge(edge)"
+            <path
+              v-for="edge in edges"
+              :key="edge.id"
+              :class="['link', {selected: edge.selected}]"
+              :d="edgeData(edge)"
+              marker-end="url(#arrow)"
+              @click="clickEdge(edge)"
             ></path>
           </g>
           <g>
-            <g v-for="node in nodes"
-               :key="node.id"
-               :class="['conceptG', {selected: node.selected, toLink: state.toLink}]"
-               :transform="'translate('+node.x+','+node.y+')'"
-               @mousedown="nodeMousedown(node)"
-               @mouseup="nodeMouseup(node)"
+            <g
+              v-for="node in nodes"
+              :key="node.id"
+              :class="['conceptG', {selected: node.selected, toLink: state.toLink}]"
+              :transform="'translate('+node.x+','+node.y+')'"
+              @mousedown="nodeMousedown(node)"
+              @mouseup="nodeMouseup(node)"
             >
               <circle :r="node.r"></circle>
               <text text-anchor="middle">
@@ -51,6 +56,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import RightMenu from './RightMenu'
 
 var nodeId = 3
@@ -67,16 +74,13 @@ export default {
       dragData: ''
     }
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      nodes: state => state.flowchart.nodes,
+      edges: state => state.flowchart.edges
+    })
+  },
   props: {
-    nodes: {
-      type: Array,
-      require: true
-    },
-    edges: {
-      type: Array,
-      require: true
-    },
     state: {
       type: Object,
       require: true
@@ -87,13 +91,14 @@ export default {
   },
   methods: {
     edgeData: function (edge) {
-      return 'M' + edge.source.x + ',' + edge.source.y +
-             ' L' + edge.target.x + ',' + edge.target.y
+      const source = edge.source
+      const target = edge.target
+      return `M${source.x},${source.y}L${target.x},${target.y}`
     },
     addNode: function (e) {
       var jsonStr = e.dataTransfer.getData('item')
       var jsonObj = JSON.parse(jsonStr)
-      this.nodes.push({
+      this.$store.commit('ADD_NODE', {
         id: nodeId++,
         name: jsonObj.name,
         type: jsonObj.type,
@@ -104,16 +109,16 @@ export default {
       })
     },
     unSelectedNodes: function () {
-      this.nodes.map(function (node) {
+      this.nodes.forEach(node => {
         node.selected = false
       })
-      this.state.selectedNode = null
+      this.$store.commit('SET_SELECTED_NODE', null)
     },
     unSelectedEdges: function () {
-      this.edges.map(function (edge) {
+      this.edges.forEach(edge => {
         edge.selected = false
       })
-      this.state.selectedEdge = null
+      this.$store.commit('SET_SELECTED_EDGE', null)
     },
     unSelectedAll: function () {
       this.unSelectedNodes()
@@ -123,7 +128,7 @@ export default {
       var state = this.state
       this.unSelectedAll()
       node.selected = true
-      state.selectedNode = node
+      this.$store.commit('SET_SELECTED_NODE', node)
       this.mousedownNode = node
       if (state.toLink) {
         this.isLinking = true
@@ -138,7 +143,7 @@ export default {
           target: node,
           selected: false
         }
-        this.edges.push(edge)
+        this.$store.commit('ADD_EDGE', edge)
       }
     },
     linkNodes: function () {
@@ -183,7 +188,7 @@ export default {
     clickEdge: function (edge) {
       this.unSelectedAll()
       edge.selected = true
-      this.state.selectedEdge = edge
+      this.$store.commit('SET_SELECTED_EDGE', edge)
     }
   }
 }
