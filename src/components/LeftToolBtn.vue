@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
   props: {
     btn: {
@@ -19,24 +20,20 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'toggle_isDragging'
+    ]),
     clickBtn: function (type) {
       this.$emit('selectedBtn', type)
     },
     dragstart: function (event, item) {
       this.clickBtn(item)
-      var state = {
-        key: 'isDragging',
-        value: true
-      }
-      this.$emit('changeState', state)
+      this.toggle_isDragging(true)
       event.dataTransfer.setData('item', JSON.stringify(item))
     },
     dragend: function (event) {
-      var state = {
-        key: 'isDragging',
-        value: false
-      }
-      this.$emit('changeState', state)
+      this.toggle_isDragging(false)
+      // this.$store.dispatch('toggle_isDragging', false)
       event.dataTransfer.clearData()
     }
   }

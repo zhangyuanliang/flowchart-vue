@@ -13,15 +13,13 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import { mapState } from 'vuex'
 
+=======
+import {mapGetters} from 'vuex'
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
 export default {
-  props: {
-    state: {
-      type: Object,
-      require: true
-    }
-  },
   data () {
     return {
       showProp: {
@@ -31,10 +29,16 @@ export default {
     }
   },
   computed: {
+<<<<<<< HEAD
     ...mapState({
       selectedNode: state => state.flowchart.selectedNode,
       selectedEdge: state => state.flowchart.selectedEdge
     })
+=======
+    ...mapGetters([
+      'graphState'
+    ])
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
   },
   methods: {
     showSelectedProp: function (type, data) {
@@ -48,13 +52,21 @@ export default {
     }
   },
   watch: {
+<<<<<<< HEAD
     'selectedNode': function (curr, old) {
+=======
+    'graphState.selectedNode': function (curr, old) {
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
       if (!curr) {
         return false
       }
       this.showSelectedProp('node', curr)
     },
+<<<<<<< HEAD
     'selectedEdge': function (curr, old) {
+=======
+    'graphState.selectedEdge': function (curr, old) {
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
       if (!curr) {
         return false
       }

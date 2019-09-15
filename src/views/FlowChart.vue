@@ -10,22 +10,27 @@
             :key="btn.value"
             :btn="btn"
             @selectedBtn="selectedBtn"
-            @changeState="changeState"
           ></li>
         </ul>
       </div>
       <div class="graph-container">
         <Graph
+<<<<<<< HEAD:src/components/FlowChart.vue
           :state="state"
+=======
+          :nodes="nodes"
+          :edges="edges"
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee:src/views/FlowChart.vue
           @activeSelectBtn="activeSelectBtn"
         ></Graph>
-        <GraphProp :state="state"></GraphProp>
+        <GraphProp></GraphProp>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD:src/components/FlowChart.vue
 import { mapState } from 'vuex'
 
 import Tools from './Tools'
@@ -42,6 +47,33 @@ export default {
         isDragging: false,
         toLink: false
       }
+=======
+import {mapGetters, mapActions} from 'vuex'
+
+import Tools from '@/components/Tools'
+import LeftToolBtn from '@/components/LeftToolBtn'
+import Graph from '@/components/Graph'
+import GraphProp from '@/components/GraphProp'
+
+import UUID from '@/utils/createUniqueString'
+
+import btnsData from '@/data/btns.json'
+
+var testNodes = [
+  {id: 1, name: '普通活动', type: 'activity', x: 200, y: 200, selected: false, r: 34},
+  {id: 2, name: '普通活动', type: 'activity', x: 300, y: 300, selected: false, r: 34}
+]
+var testEdges = [
+  {id: 1, source: testNodes[0], target: testNodes[1], selected: false}
+]
+
+export default {
+  data () {
+    return {
+      btns: btnsData,
+      nodes: testNodes,
+      edges: testEdges
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee:src/views/FlowChart.vue
     }
   },
   computed: {
@@ -57,20 +89,25 @@ export default {
     Graph,
     GraphProp
   },
+  computed: {
+    ...mapGetters([
+      'graphState'
+    ])
+  },
   methods: {
+    ...mapActions([
+      'toggle_toLink'
+    ]),
     selectedBtn: function (btn) {
       this.btns.map(item => {
         item.active = false
       })
       btn.active = !btn.active
-      var state = {
-        key: 'toLink',
-        value: false
-      }
+      var toLink = false
       switch (btn.value) {
         case 'line':
         case 'polyline':
-          state.value = true
+          toLink = true
           break
         case 'addStartEnd':
           this.addStartAndEnd()
@@ -78,7 +115,8 @@ export default {
         default:
           break
       }
-      this.changeState(state)
+      // this.graphState.toLink = toLink
+      this.$store.dispatch('toggle_toLink', toLink)
     },
     addStartAndEnd: function () {
       this.nodesNoOutput().forEach(node => {
@@ -137,9 +175,6 @@ export default {
         })
       })
     },
-    changeState: function (state) {
-      this.state[state.key] = state.value
-    },
     activeSelectBtn: function () {
       this.btns.forEach(btn => {
         if (btn.value === 'select') {
@@ -148,7 +183,8 @@ export default {
           btn.active = false
         }
       })
-      this.state.toLink = false
+      // this.state.toLink = false
+      this.$store.dispatch('toggle_toLink', false)
     }
   }
 }

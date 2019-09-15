@@ -1,6 +1,10 @@
 <template>
   <div class="container">
+<<<<<<< HEAD
     <div
+=======
+    <div :class="['graph', {active: graphState.isDragging}]"
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
       @drop="addNode"
       @dragover.prevent
       :class="['graph', {active: state.isDragging}]"
@@ -34,6 +38,7 @@
             ></path>
           </g>
           <g>
+<<<<<<< HEAD
             <g
               v-for="node in nodes"
               :key="node.id"
@@ -41,6 +46,14 @@
               :transform="'translate('+node.x+','+node.y+')'"
               @mousedown="nodeMousedown(node)"
               @mouseup="nodeMouseup(node)"
+=======
+            <g v-for="node in nodes"
+               :key="node.id"
+               :class="['conceptG', {selected: node.selected, toLink: graphState.toLink}]"
+               :transform="'translate('+node.x+','+node.y+')'"
+               @mousedown="nodeMousedown(node)"
+               @mouseup="nodeMouseup(node)"
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
             >
               <circle :r="node.r"></circle>
               <text text-anchor="middle">
@@ -56,8 +69,12 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import { mapState } from 'vuex'
 
+=======
+import {mapGetters, mapActions} from 'vuex'
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
 import RightMenu from './RightMenu'
 
 var nodeId = 3
@@ -75,6 +92,7 @@ export default {
     }
   },
   computed: {
+<<<<<<< HEAD
     ...mapState({
       nodes: state => state.flowchart.nodes,
       edges: state => state.flowchart.edges
@@ -83,6 +101,19 @@ export default {
   props: {
     state: {
       type: Object,
+=======
+    ...mapGetters([
+      'graphState'
+    ])
+  },
+  props: {
+    nodes: {
+      type: Array,
+      require: true
+    },
+    edges: {
+      type: Array,
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
       require: true
     }
   },
@@ -90,6 +121,10 @@ export default {
     RightMenu
   },
   methods: {
+    ...mapActions([
+      'changSelectedNode',
+      'changSelectedEdge'
+    ]),
     edgeData: function (edge) {
       const source = edge.source
       const target = edge.target
@@ -112,25 +147,35 @@ export default {
       this.nodes.forEach(node => {
         node.selected = false
       })
+<<<<<<< HEAD
       this.$store.commit('SET_SELECTED_NODE', null)
+=======
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
     },
     unSelectedEdges: function () {
       this.edges.forEach(edge => {
         edge.selected = false
       })
+<<<<<<< HEAD
       this.$store.commit('SET_SELECTED_EDGE', null)
+=======
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
     },
     unSelectedAll: function () {
       this.unSelectedNodes()
       this.unSelectedEdges()
     },
     nodeMousedown: function (node) {
-      var state = this.state
       this.unSelectedAll()
       node.selected = true
+<<<<<<< HEAD
       this.$store.commit('SET_SELECTED_NODE', node)
+=======
+      this.changSelectedNode(node)
+      // this.$store.dispatch('changSelectedNode', node)
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
       this.mousedownNode = node
-      if (state.toLink) {
+      if (this.graphState.toLink) {
         this.isLinking = true
         this.justDrag = false
       }
@@ -188,7 +233,12 @@ export default {
     clickEdge: function (edge) {
       this.unSelectedAll()
       edge.selected = true
+<<<<<<< HEAD
       this.$store.commit('SET_SELECTED_EDGE', edge)
+=======
+      this.changSelectedEdge(edge)
+      // this.$store.dispatch('changSelectedEdge', edge)
+>>>>>>> cfc8453d6b8faae303df5e1177a090a5810f3eee
     }
   }
 }
