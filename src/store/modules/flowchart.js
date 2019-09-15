@@ -15,6 +15,8 @@ const flowchart = {
     edges: testEdges,
     selectedNode: null,
     selectedEdge: null,
+    isDragging: false,
+    toLink: false,
     btns: [
       {name: '选择', value: 'select', type: null, draggable: false, active: true},
       {name: '自动插入', value: 'addStartEnd', type: null, draggable: false, active: false},
@@ -45,6 +47,12 @@ const flowchart = {
     },
     SET_SELECTED_EDGE: (state, edge) => {
       state.selectedEdge = edge
+    },
+    TOGGLE_ISDRAGGING: (state, isDragging) => {
+      state.isDragging = isDragging
+    },
+    TOGGLE_TOLINK: (state, toLink) => {
+      state.toLink = toLink
     }
   },
   actions: {
